@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ zone.name }}{% endblock %}
+
+{% block body %}
+{% include "_nav_bar.html" %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">首页</li>
+    </ol>
+
+{% include "Forum/zone_list.html" %}
+{% include "Forum/all_post_list.html" %}
+    </div>
+{% endblock %}

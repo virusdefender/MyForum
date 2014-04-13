@@ -1,0 +1,15 @@
+
+    <h3>{{ zone.name }}</h3>
+    <div class="panel panel-default">
+  <div class="panel-body">
+    <p>描述： {{ zone.description }}</p>
+    <p>创建时间：{{ zone.create_time|date:"Y-m-d H:i:s"}}</p>
+    <p>创建者：
+        {% for item in zone.manager.all %}
+             {{ item.username }}
+        {% endfor %}
+    </p>
+    <p><button type="button" class="btn btn-primary"
+               onclick="window.location.href='/forum/zone/{{ zone.id }}/post/'">发帖</button></p>
+  </div>
+</div>

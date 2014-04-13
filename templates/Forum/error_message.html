@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ zone.name }}{% endblock %}
+
+{% block body %}
+{% include "_nav_bar.html" %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+
+        <li class="active">错误</li>
+    </ol>
+
+<div class="alert alert-{{ type }}">{{ content }}</div>
+    </div>
+{% endblock %}

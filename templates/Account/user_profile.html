@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}个人资料{% endblock %}
+
+{% block body %}
+
+{% include "_nav_bar.html" %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li class="active">个人资料</li>
+    </ol>
+    <div class="panel panel-primary">
+        <div class="panel-heading">个人资料</div>
+        <div class="panel-body">
+            用户名： {{ user.username }}<br/>
+            email： {{ user.email }}
+        </div>
+    </div>
+    <div class="panel panel-danger">
+        <div class="panel-heading">操作</div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-primary" onclick="window.location.href='/account/change_password/'">修改密码
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-danger" onclick="window.location.href='/account/logout/'">退出登录</button>
+            <br/><br/>
+            {% if user.is_staff %}
+                <button type="button" class="btn btn-primary" onclick="window.location.href='/admin/'">后台管理</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">消息</div>
+        <div class="panel-body">
+            {% if new_message %}
+                <div class= "alert alert-warning" >你有未读消息！<a href="/message/">点击查看</a> </div>
+            {% endif %}
+            <button type="button" class="btn btn-primary" onclick="window.location.href='/message/send_message/'">写信</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-primary" onclick="window.location.href='/message/'">信息列表</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

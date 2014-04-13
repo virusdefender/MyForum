@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block cssblock %}
+<link rel='stylesheet' href='{{ STATIC_URL }}css/messenger.css'/>
+<link rel='stylesheet' href='{{ STATIC_URL }}css/messenger-theme-flat.css'/>
+
+{% endblock %}
+{% block javascriptblock %}
+<script src='{{ STATIC_URL }}js/messenger.min.js'></script>
+<script>
+Messenger.options = {
+    extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+    theme: 'flat'
+}
+</script>
+<script src="{{ STATIC_URL }}js/advanced.js"></script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.4.0pre.js"></script>
+<script src="{{ STATIC_URL }}js/post_new.js"></script>
+{% endblock %}
+
+{% block body %}
+
+{% include "_nav_bar.html" %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/" target="_blank">Home</a></li>
+        <li><a href="/forum/zone/{{ zone_id }}/page/1/" target="_blank">{{ zone_name }}</a></li>
+        <li class="active">编辑</li>
+    </ol>
+</div>
+
+<div class="container">
+    <div class="editor">
+        <form class="form-horizontal" role="form" id="post_new_form" method="POST" action="/forum/post/{{ post.id }}/edit/">
+
+            {% csrf_token %}
+            <div><input type="text" class="form-control" name="title" placeholder="标题" value="{{ post.title }}"></div>
+            <br>
+            <div id="toolbar" style="display: none;">
+                <a data-wysihtml5-command="bold" title="CTRL+B">bold</a> |
+                <a data-wysihtml5-command="italic" title="CTRL+I">italic</a> |
+                <a data-wysihtml5-command="createLink">insert link</a> |
+                <a href="/upload_file/" target="_blank">upload image</a> |
+                <a data-wysihtml5-command="insertImage">insert image</a> |
+                <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1">h1</a> |
+                <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2">h2</a> |
+                <a data-wysihtml5-command="insertUnorderedList">insertUnorderedList</a> |
+                <a data-wysihtml5-command="insertOrderedList">insertOrderedList</a> |
+
+
+                <div data-wysihtml5-dialog="createLink" style="display: none;">
+                    <label>
+                        Link:
+                        <input data-wysihtml5-dialog-field="href" value="http://">
+                    </label>
+                    <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a
+                        data-wysihtml5-dialog-action="cancel">Cancel</a>
+                </div>
+
+                <div data-wysihtml5-dialog="insertImage" style="display: none;">
+                    <label>
+                        Image:
+                        <input data-wysihtml5-dialog-field="src" value="http://">
+                    </label>
+                    <label>
+                        Align:
+                        <select data-wysihtml5-dialog-field="className">
+                            <option value="">default</option>
+                            <option value="wysiwyg-float-left">left</option>
+                            <option value="wysiwyg-float-right">right</option>
+                        </select>
+                    </label>
+                    <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a
+                        data-wysihtml5-dialog-action="cancel">Cancel</a>
+                </div>
+
+            </div>
+            <div><textarea class="form-control" rows="8" name="content" id="edit_content" placeholder="请输入正文">{{ post.content }}</textarea>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" id="post_new_submit">提交</button>
+        </form>
+    </div>
+</div>
+<script>
+  var editor = new wysihtml5.Editor("edit_content", {
+    toolbar:        "toolbar",
+    stylesheets:    "{{ STATIC_URL }}css/editor.css",
+    parserRules:    wysihtml5ParserRules
+  });
+
+</script>
+{% endblock %}

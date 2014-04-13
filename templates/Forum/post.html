@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block cssblock %}
+<link rel='stylesheet' href='{{ STATIC_URL }}css/messenger.css'/>
+<link rel='stylesheet' href='{{ STATIC_URL }}css/messenger-theme-flat.css'/>
+{% endblock %}
+{% block javascriptblock %}
+<script src='{{ STATIC_URL }}js/messenger.min.js'></script>
+<script>
+Messenger.options = {
+    extraClasses: 'messenger-fixed messenger-on-bottom messenger-on-right',
+    theme: 'flat'
+}
+</script>
+
+<script src="{{ STATIC_URL }}js/advanced.js"></script>
+<script src="{{ STATIC_URL }}js/wysihtml5-0.4.0pre.js"></script>
+<script src="{{ STATIC_URL }}js/reply.js"></script>
+{% endblock %}
+{% block body %}
+{% include "_nav_bar.html" %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="/">Home</a></li>
+        <li><a href="/forum/zone/{{ zone.id }}/page/1/">{{ zone.name }}</a></li>
+        <li class="active"> {{ post.title }}</li>
+    </ol>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3>{{ post.title }}</h3>
+
+            <p>
+                作者：<a href="/user/{{ post.author }}/">{{ post.author }}</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                时间：{{ post.create_time|date:"Y-m-d H:i:s" }}
+                {% if edit %}
+                <a href="/forum/post/{{ post.id }}/edit/">编辑</a>
+                {% endif %}
+                {% if delete %}
+                <a href="javascript:void(0)" class="delete_post" onclick="delete_post('{{ post.id }}', '{{ token }}')">删除</a>
+                {% endif %}
+            </p>
+
+            <hr>
+            {{ post.content|safe }}
+        </div>
+    </div>
+    <div class="replies">
+        {% for item in post.reply.all %}
+        <div class="panel panel-info" id="{{ item.id }}">
+            <div class="panel-heading"><a href="/user/{{ item.username }}/">{{ item.username }}</a>&nbsp;&nbsp;|&nbsp;&nbsp;{{ item.create_time|date:"Y-m-d H:i:s" }}
+                <a href="javascript:void(0)" class="reply" onclick="reply_comment('{{ item.username }}')">回复</a>
+                {% if delete %}
+                <a href="javascript:void(0)" class="delete_reply"
+                   onclick="delete_comment('{{ item.id }}')">删除</a>
+                {% endif %}
+
+            </div>
+            <div class="panel-body">
+                {{ item.content|safe }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="editor">
+        <form class="form-horizontal" role="form" id="reply_form" method="POST"
+              action="/forum/post/{{ post.id }}/reply/">
+            {% csrf_token %}
+            <div id="toolbar" style="display: none;">
+                <a data-wysihtml5-command="bold" title="CTRL+B">bold</a> |
+                <a data-wysihtml5-command="italic" title="CTRL+I">italic</a> |
+                <a data-wysihtml5-command="createLink">insert link</a> |
+                <a href="/upload_file/" target="_blank">upload image</a> |
+                <a data-wysihtml5-command="insertImage">insert image</a> |
+                <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1">h1</a> |
+                <a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2">h2</a> |
+                <a data-wysihtml5-command="insertUnorderedList">insertUnorderedList</a> |
+                <a data-wysihtml5-command="insertOrderedList">insertOrderedList</a> |
+
+
+                <div data-wysihtml5-dialog="createLink" style="display: none;">
+                    <label>
+                        Link:
+                        <input data-wysihtml5-dialog-field="href" value="http://">
+                    </label>
+                    <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a
+                        data-wysihtml5-dialog-action="cancel">Cancel</a>
+                </div>
+
+                <div data-wysihtml5-dialog="insertImage" style="display: none;">
+                    <label>
+                        Image:
+                        <input data-wysihtml5-dialog-field="src" value="http://">
+                    </label>
+                    <label>
+                        Align:
+                        <select data-wysihtml5-dialog-field="className">
+                            <option value="">default</option>
+                            <option value="wysiwyg-float-left">left</option>
+                            <option value="wysiwyg-float-right">right</option>
+                        </select>
+                    </label>
+                    <a data-wysihtml5-dialog-action="save">OK</a>&nbsp;<a
+                        data-wysihtml5-dialog-action="cancel">Cancel</a>
+                </div>
+
+            </div>
+            <div>
+                <textarea class="form-control" rows="4" id="reply_content" name="content" placeholder="请输入正文"></textarea>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" id="reply_submit">提交</button>
+        </form>
+    </div>
+
+</div>
+<script>
+$("img").addClass("img-responsive")
+</script>
+<script>
+    function reply_comment(value){
+
+    var text = editor.getValue();
+    editor.focus();
+
+    editor.setValue('@' + value + '&nbsp;' + text, true);
+
+}
+
+function delete_comment(comment_id){
+  if(confirm("确定删除此内容?")){
+    $.get('/forum/reply/delete_comment/' ,
+    {"id" :comment_id,"token": "{{ token }}"}, function(re){
+      $("#" + comment_id).remove();
+    });
+  }
+}
+
+function delete_post(post_id, token){
+  if(confirm("确定删除此内容?")){
+    $.get('/forum/post/delete/' ,
+    {"post_id" :post_id,"token": token}, function(re){
+      window.location.href="/forum/zone/{{ zone.id }}/page/1/";
+    });
+  }
+}
+
+</script>
+
+<script>
+  var editor = new wysihtml5.Editor("reply_content", {
+    toolbar:        "toolbar",
+    stylesheets:    "{{ STATIC_URL }}css/editor.css",
+    parserRules:    wysihtml5ParserRules
+  });
+
+</script>
+{% endblock %}
