@@ -24,29 +24,12 @@
         </ul>
 
     </div>
+    {% if unread_message_num %}
         <ul class="pager">
             <li class="next"><a href="/message/received/1/">更多</a></li>
         </ul>
-<!--
-    <br/><br/>
+    {% endif %}
 
-    <div class="panel panel-default">
-
-        <div class="panel-heading">我发送的消息</div>
-
-        <ul class="list-group">
-            {% for item in sent %}
-            <li class="list-group-item"><a href="/message/read_message/{{ item.id }}/">
-                {{ item.create_time|date:"Y-m-d H:i:s" }} -- {{ item.to_user }} -- {{ item.subject}}</a></li>
-            {% endfor %}
-        </ul>
-
-    </div>
-    <ul class="pager">
-        <li class="next"><a href="/message/sent/1/">更多</a></li>
-
-    </ul>
-    -->
 </div>
 
 {% endblock %}

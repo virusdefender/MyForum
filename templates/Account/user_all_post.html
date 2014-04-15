@@ -10,35 +10,38 @@
     </ol>
 
     <p><a href="/message/send_message/?to_user={{ username }}">给{{ username }}发送消息</a></p>
-    <ul class="list-group">
-        {% for item in posts %}
-        <li class="list-group-item">
-            <p><h4><a href="/forum/post/{{ item.id }}/">{{ item.title }}</a></h4></p>
-            <p>作者：<a href="/user/{{ item.author }}/">{{ item.author }}</a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;时间：{{ item.create_time|date:"Y-m-d H:i:s"}}
-                &nbsp;&nbsp;|&nbsp;&nbsp;板块：{{ item.zone_name }}</p>
-        </li>
-        {% endfor %}
+    {% if not posts %}
+        <div class="alert alert-success">该用户没有帖子！</div>
+    {% else %}
+        <ul class="list-group">
+            {% for item in posts %}
+            <li class="list-group-item">
+                <p><h4><a href="/forum/post/{{ item.id }}/">{{ item.title }}</a></h4></p>
+                <p>作者：<a href="/user/{{ item.author }}/">{{ item.author }}</a>
+                    &nbsp;&nbsp;|&nbsp;&nbsp;时间：{{ item.create_time|date:"Y-m-d H:i:s"}}
+                    &nbsp;&nbsp;|&nbsp;&nbsp;板块：{{ item.zone_name }}</p>
+            </li>
+            {% endfor %}
 
-        <ul class="pager">
-            {% ifequal page_num "1" %}
-            {% ifequal page_num total_page %}
-            当前第 {{ page_num }}页，最后一页
-            {% else %}
-            <li class="next"><a href="/user/{{ username }}/page/{{ next_page }}/">下一页 &rarr;</a></li>
-            {% endifequal %}
-            {% else %}
-            {% ifequal page_num total_page %}
-            当前第 {{ page_num }}页，最后一页
-            <li class="previous"><a href="/user/{{ username }}/page/{{ pre_page }}">&larr; 上一页</a></li>
-            {% else %}
-            <li class="previous"><a href="/user/{{ username }}/page/{{ pre_page }}">&larr; 上一页</a></li>
-            <li class="next"><a href="/user/{{ username }}/page/{{ next_page }}">下一页 &rarr;</a></li>
-            {% endifequal %}
-            {% endifequal %}
+            <ul class="pager">
+                {% ifequal page_num "1" %}
+                {% ifequal page_num total_page %}
+                当前第 {{ page_num }}页，最后一页
+                {% else %}
+                <li class="next"><a href="/user/{{ username }}/page/{{ next_page }}/">下一页 &rarr;</a></li>
+                {% endifequal %}
+                {% else %}
+                {% ifequal page_num total_page %}
+                当前第 {{ page_num }}页，最后一页
+                <li class="previous"><a href="/user/{{ username }}/page/{{ pre_page }}">&larr; 上一页</a></li>
+                {% else %}
+                <li class="previous"><a href="/user/{{ username }}/page/{{ pre_page }}">&larr; 上一页</a></li>
+                <li class="next"><a href="/user/{{ username }}/page/{{ next_page }}">下一页 &rarr;</a></li>
+                {% endifequal %}
+                {% endifequal %}
 
+            </ul>
         </ul>
-
-    </ul>
+    {% endif %}
 </div>
 {% endblock %}
