@@ -19,7 +19,6 @@ def message(status, content):
 
 def register(request):
     if request.method == "POST":
-
         username = request.POST.get("username", " ").strip()
         email = request.POST.get("email", " ").strip()
         password = request.POST.get("password", " ").strip()
@@ -35,9 +34,6 @@ def register(request):
         username_is_exist = User.objects.filter(username=username).exists()
         if username_is_exist:
             return message("error", u"用户名已经存在")
-
-        if not len(email):
-            return message("error", u"请填写邮箱")
 
         r = re.compile(r"[^@]+@[^@]+\.[^@]+")
         if not r.match(email):
