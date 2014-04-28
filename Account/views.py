@@ -46,6 +46,9 @@ def register(request):
         if password != password1:
             return message("error", u"两个密码不一致")
 
+        if len(password) < 6:
+            return message("error", u"密码太短")
+
         User.objects.create_user(username=username, password=password, email=email)
         next = request.POST.get("next", "/")
         response_json = {"status": "success", "redirect": next}
@@ -99,6 +102,8 @@ def change_password(request):
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
         if password1 == password2:
+            if len(password1) < 6:
+                return message("error", u"密码过短")
             if auth.authenticate(username=request.user.username, password=old_password):
                 user = User.objects.get(username=request.user.username)
                 user.set_password(password1)
